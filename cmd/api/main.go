@@ -7,10 +7,8 @@ import (
 
 	"api-golang/config"
 	db "api-golang/database"
-	"api-golang/handlers"
+	httpd "api-golang/internal/delivery/http"
 	"api-golang/middleware"
-	"api-golang/repositories"
-	"api-golang/services"
 )
 
 func main() {
@@ -25,16 +23,9 @@ func main() {
 	defer pool.Close()
 	fmt.Println("✅ Database Terkoneksi via pgxpool!")
 
-	// Inisialisasi layers (Repository -> Service -> Handler)
-	userRepo := &repositories.UserRepo{DB: pool}
-	userService := services.NewUserService(userRepo)
-	userHandler := &handlers.UserHandler{Service: userService}
-
-	// Setup routes
+	// Setup routes menggunakan polan Centralized Router Clean Architecture
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /users", userHandler.CreateUser)
-	mux.HandleFunc("GET /users", userHandler.GetUsers)
-	mux.HandleFunc("DELETE /users/{id}", userHandler.DeleteUser)
+	httpd.SetupRouter(mux, pool)
 
 	// Wrap dengan middleware (Recovery -> Logger -> Mux)
 	handler := middleware.Recovery(middleware.Logger(mux))

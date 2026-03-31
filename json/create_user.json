@@ -1,0 +1,9 @@
+{
+  "name": "Budi Santoso",
+  "email": "budi.santoso@example.com",
+  "password": "SecretPassword123!",
+  "kd_karyawan": "EMP-2026-001",
+  "is_admin": false,
+  "is_banned": false,
+  "is_verifikasi": true 
+}
